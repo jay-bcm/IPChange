@@ -78,6 +78,8 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.btnSite1 = new System.Windows.Forms.Button();
             this.btnSite2 = new System.Windows.Forms.Button();
+            this.lblClothoPath = new System.Windows.Forms.Label();
+            this.lblClothoSetting = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -154,7 +156,7 @@
             // 
             // textBoxGatway
             // 
-            this.textBoxGatway.Location = new System.Drawing.Point(102, 124);
+            this.textBoxGatway.Location = new System.Drawing.Point(102, 121);
             this.textBoxGatway.Name = "textBoxGatway";
             this.textBoxGatway.ReadOnly = true;
             this.textBoxGatway.Size = new System.Drawing.Size(184, 20);
@@ -163,7 +165,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 127);
+            this.label3.Location = new System.Drawing.Point(6, 123);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(96, 13);
             this.label3.TabIndex = 8;
@@ -207,7 +209,7 @@
             // 
             this.checkBoxDhcpEnabled.AutoSize = true;
             this.checkBoxDhcpEnabled.Enabled = false;
-            this.checkBoxDhcpEnabled.Location = new System.Drawing.Point(6, 28);
+            this.checkBoxDhcpEnabled.Location = new System.Drawing.Point(6, 27);
             this.checkBoxDhcpEnabled.Name = "checkBoxDhcpEnabled";
             this.checkBoxDhcpEnabled.Size = new System.Drawing.Size(175, 17);
             this.checkBoxDhcpEnabled.TabIndex = 15;
@@ -226,7 +228,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 181);
+            this.label7.Location = new System.Drawing.Point(4, 195);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(74, 13);
             this.label7.TabIndex = 17;
@@ -234,7 +236,7 @@
             // 
             // textBoxInterfaceName
             // 
-            this.textBoxInterfaceName.Location = new System.Drawing.Point(78, 181);
+            this.textBoxInterfaceName.Location = new System.Drawing.Point(79, 195);
             this.textBoxInterfaceName.Name = "textBoxInterfaceName";
             this.textBoxInterfaceName.ReadOnly = true;
             this.textBoxInterfaceName.Size = new System.Drawing.Size(229, 20);
@@ -249,9 +251,9 @@
             this.groupBox1.Controls.Add(this.textBoxSubnetMask);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.textBoxGatway);
-            this.groupBox1.Location = new System.Drawing.Point(6, 206);
+            this.groupBox1.Location = new System.Drawing.Point(7, 220);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(312, 156);
+            this.groupBox1.Size = new System.Drawing.Size(312, 153);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "IP";
@@ -263,7 +265,7 @@
             this.groupBox2.Controls.Add(this.textBoxDns);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.textBoxSecondDns);
-            this.groupBox2.Location = new System.Drawing.Point(6, 375);
+            this.groupBox2.Location = new System.Drawing.Point(16, 265);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(312, 131);
             this.groupBox2.TabIndex = 20;
@@ -334,7 +336,7 @@
             // 
             this.groupBox3.Controls.Add(this.panelDns);
             this.groupBox3.Controls.Add(this.checkBoxSetDns);
-            this.groupBox3.Location = new System.Drawing.Point(327, 375);
+            this.groupBox3.Location = new System.Drawing.Point(344, 265);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(293, 131);
             this.groupBox3.TabIndex = 25;
@@ -400,7 +402,7 @@
             // 
             this.groupBox4.Controls.Add(this.panelIp);
             this.groupBox4.Controls.Add(this.checkBoxSetIp);
-            this.groupBox4.Location = new System.Drawing.Point(327, 206);
+            this.groupBox4.Location = new System.Drawing.Point(344, 96);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(293, 156);
             this.groupBox4.TabIndex = 24;
@@ -530,18 +532,22 @@
             this.groupBox5.Controls.Add(this.listViewConfig);
             this.groupBox5.Controls.Add(this.textBoxSaveName);
             this.groupBox5.Controls.Add(this.label8);
-            this.groupBox5.Location = new System.Drawing.Point(67, 660);
+            this.groupBox5.Controls.Add(this.groupBox2);
+            this.groupBox5.Controls.Add(this.groupBox4);
+            this.groupBox5.Controls.Add(this.groupBox3);
+            this.groupBox5.Location = new System.Drawing.Point(89, 541);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(365, 47);
+            this.groupBox5.Size = new System.Drawing.Size(404, 128);
             this.groupBox5.TabIndex = 30;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "groupBox5";
             // 
             // btnSite1
             // 
-            this.btnSite1.Location = new System.Drawing.Point(7, 40);
+            this.btnSite1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSite1.Location = new System.Drawing.Point(15, 95);
             this.btnSite1.Name = "btnSite1";
-            this.btnSite1.Size = new System.Drawing.Size(280, 134);
+            this.btnSite1.Size = new System.Drawing.Size(133, 85);
             this.btnSite1.TabIndex = 31;
             this.btnSite1.Text = "Site1";
             this.btnSite1.UseVisualStyleBackColor = true;
@@ -549,35 +555,53 @@
             // 
             // btnSite2
             // 
-            this.btnSite2.Location = new System.Drawing.Point(339, 40);
+            this.btnSite2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSite2.Location = new System.Drawing.Point(174, 95);
             this.btnSite2.Name = "btnSite2";
-            this.btnSite2.Size = new System.Drawing.Size(280, 134);
+            this.btnSite2.Size = new System.Drawing.Size(133, 85);
             this.btnSite2.TabIndex = 31;
             this.btnSite2.Text = "Site2";
             this.btnSite2.UseVisualStyleBackColor = true;
             this.btnSite2.Click += new System.EventHandler(this.btnSiteEnable_Click);
             // 
+            // lblClothoPath
+            // 
+            this.lblClothoPath.AutoSize = true;
+            this.lblClothoPath.Location = new System.Drawing.Point(4, 47);
+            this.lblClothoPath.Name = "lblClothoPath";
+            this.lblClothoPath.Size = new System.Drawing.Size(69, 13);
+            this.lblClothoPath.TabIndex = 16;
+            this.lblClothoPath.Text = "lblClothoPath";
+            // 
+            // lblClothoSetting
+            // 
+            this.lblClothoSetting.AutoSize = true;
+            this.lblClothoSetting.Location = new System.Drawing.Point(4, 71);
+            this.lblClothoSetting.Name = "lblClothoSetting";
+            this.lblClothoSetting.Size = new System.Drawing.Size(80, 13);
+            this.lblClothoSetting.TabIndex = 16;
+            this.lblClothoSetting.Text = "lblClothoSetting";
+            // 
             // IpChange
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(631, 511);
+            this.ClientSize = new System.Drawing.Size(327, 385);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.btnSite2);
             this.Controls.Add(this.btnSite1);
             this.Controls.Add(this.groupBox5);
+            this.Controls.Add(this.lblClothoSetting);
+            this.Controls.Add(this.lblClothoPath);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.comboNetwokInterface);
             this.Controls.Add(this.textBoxInterfaceName);
-            this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.groupBox3);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "IpChange";
-            this.Text = "IP Change";
+            this.Text = "Site Changer";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -648,6 +672,8 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button btnSite1;
         private System.Windows.Forms.Button btnSite2;
+        private System.Windows.Forms.Label lblClothoPath;
+        private System.Windows.Forms.Label lblClothoSetting;
     }
 }
 

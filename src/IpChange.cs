@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Management;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace IPChange
 {
@@ -29,6 +29,8 @@ namespace IPChange
         private IpConfigViewForm m_view;
         private string m_selectedItemName;
         private string m_currentPath;
+        private string ConfigXmlPath { get; set; }
+        private string CurrentClothoHandlerAddress { get; set; }
 
         private struct networkInterfaceInfo
         {
@@ -44,9 +46,50 @@ namespace IPChange
 
         private Dictionary<string, networkInterfaceInfo> networkInfo;
 
+     
+
         public IpChange()
         {
             InitializeComponent();
+
+            var avgoFolders = Directory.GetDirectories(@"C:\", @"Avago.ATF.*", SearchOption.TopDirectoryOnly);
+            List<Version> versions = new List<Version>();
+            Version latestVersion = new Version();
+            foreach (var t in avgoFolders)
+            {
+                Regex avgoPattern = new Regex(@"\d\.\d\.\d", RegexOptions.IgnoreCase);
+                var avgoVersion = avgoPattern.Match(t);
+
+                if (avgoVersion.Success)
+                {
+                    if (Version.TryParse(avgoVersion.Value, out Version ver))
+                    {
+                        versions.Add(ver);
+                    }
+                }
+            }
+            if (versions.Count > 0)
+            {
+                latestVersion = versions.OrderByDescending(x => x).First();
+                ConfigXmlPath = System.IO.Path.Combine("C:\\", "Avago.ATF." + latestVersion.ToString(), @"System\Configuration\ATFConfig.xml");
+            }
+
+            if (File.Exists(ConfigXmlPath))
+            {
+                lblClothoPath.Text = ConfigXmlPath;
+
+                XDocument xmlFile = XDocument.Load(ConfigXmlPath);
+                var query = from c in xmlFile.Element("ATFConfiguration").Element("UserSection").Elements("ConfigItem")
+                            select c;
+                foreach (XElement book in query)
+                {
+                    if (book.Attribute("name").Value == "HandlerAddress")
+                    {
+                        CurrentClothoHandlerAddress = lblClothoSetting.Text = book.Attribute("value").Value;
+                        break;
+                    }
+                }
+            }
 
             ipSettings = new IniFile();
 
@@ -387,7 +430,7 @@ namespace IPChange
             return resultValue;
         }
 
-        void view_Refresh(object sender, EventArgs e)
+        private void view_Refresh(object sender, EventArgs e)
         {
             string resultValue = sendCommadIpconfig();
             m_view.setText(resultValue);
@@ -489,7 +532,6 @@ namespace IPChange
                 listViewConfig.Items.Clear();
                 loadIniConfig();
             }
-
         }
 
         private void deleteItem()
@@ -537,7 +579,6 @@ namespace IPChange
                     displayMessage("IP 값의 형식이 틀립니다.");
                     return;
                 }
-
             }
 
             if (textBoxSetSubnetMask.Text == string.Empty)
@@ -628,7 +669,6 @@ namespace IPChange
                             displayMessage("IP 값의 형식이 틀립니다.");
                             return;
                         }
-
                     }
 
                     if (textBoxSetSubnetMask.Text == string.Empty)
@@ -757,11 +797,32 @@ namespace IPChange
             if (sender == btnSite1)
             {
                 settingIpConfig(1);
+                SetClothoSiteInformation(1);
             }
             else if (sender == btnSite2)
             {
                 settingIpConfig(2);
+                SetClothoSiteInformation(2);
             }
+        }
+
+        private void SetClothoSiteInformation(int site)
+        {
+            string _site = site.ToString();
+
+            XDocument xmlFile = XDocument.Load(ConfigXmlPath);
+            var query = from c in xmlFile.Element("ATFConfiguration").Element("UserSection").Elements("ConfigItem")
+                        select c;
+            foreach (XElement book in query)
+            {
+                if (book.Attribute("name").Value == "HandlerAddress")
+                {
+                    book.Attribute("value").Value = _site;
+                    CurrentClothoHandlerAddress = lblClothoSetting.Text = _site;
+                    break;
+                }
+            }
+            xmlFile.Save(ConfigXmlPath);
         }
     }
 }
