@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/src/bin/x64/Debug
+/src/.vs/IPChange/v15
+/src/obj/x64/Debug
+/src/obj/x86

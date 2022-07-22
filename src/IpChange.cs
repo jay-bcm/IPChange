@@ -49,7 +49,7 @@ namespace IPChange
             InitializeComponent();
 
             ipSettings = new IniFile();
-            
+
             m_view = new IpConfigViewForm();
             m_view.RefreshIpconfig += new EventHandler(view_Refresh);
 
@@ -75,13 +75,13 @@ namespace IPChange
             foreach (IniFile.IniSection section in ipSettings.Sections)
             {
                 ListViewItem item = new ListViewItem(section.Name);
-                
+
                 Dictionary<string, string> keyValues = new Dictionary<string, string>();
                 foreach (IniFile.IniSection.IniKey key in section.Keys)
                 {
                     if (key.Value != string.Empty)
                     {
-                        keyValues.Add(key.Name, key.Value);                
+                        keyValues.Add(key.Name, key.Value);
                     }
                 }
 
@@ -113,8 +113,8 @@ namespace IPChange
 
         private void DisplayNetworkInfo()
         {
-            networkInfo = new Dictionary<string,networkInterfaceInfo>();
-            
+            networkInfo = new Dictionary<string, networkInterfaceInfo>();
+
             NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
 
             foreach (NetworkInterface adapter in adapters)
@@ -138,7 +138,8 @@ namespace IPChange
                 info = getDhcpServerAddress(info, dhcpServers);
                 info = getDnsServerAddress(info, dnsServers);
 
-                networkInfo.Add(adapter.Name, info);
+                if (!info.ipAddress.StartsWith("10.100.") && !info.interfaceDescription.Contains("Loopback"))
+                    networkInfo.Add(adapter.Name, info);
             }
 
             int seletedInaterCardIndex = comboNetwokInterface.SelectedIndex;
@@ -256,6 +257,17 @@ namespace IPChange
         {
             networkInterfaceInfo value = ((KeyValuePair<string, networkInterfaceInfo>)comboNetwokInterface.SelectedItem).Value;
 
+            if (value.ipAddress.Equals("192.168.0.1"))
+            {
+                btnSite1.Enabled = false;
+                btnSite2.Enabled = true;
+            }
+            else if (value.ipAddress.Equals("192.168.0.2"))
+            {
+                btnSite1.Enabled = true;
+                btnSite2.Enabled = false;
+            }
+
             textBoxIpAddress.Text = value.ipAddress;
             textBoxSubnetMask.Text = value.subnetMask;
             textBoxGatway.Text = "";
@@ -263,7 +275,7 @@ namespace IPChange
             textBoxSecondDns.Text = "";
 
             textBoxInterfaceName.Text = value.interfaceDescription;
-            
+
             if (value.gatewateAddresses.Count > 0)
             {
                 textBoxGatway.Text = value.gatewateAddresses[0];
@@ -337,7 +349,7 @@ namespace IPChange
             }
 
             string ipAddress = checkBoxSetIp.Checked ? DHCP : textBoxSetIp.Text;
-            ipSettings.SetKeyValue(textBoxSaveName.Text, KEYNAME_IP, ipAddress);            
+            ipSettings.SetKeyValue(textBoxSaveName.Text, KEYNAME_IP, ipAddress);
             ipSettings.SetKeyValue(textBoxSaveName.Text, KEYNAME_SUBNETMASK, textBoxSetSubnetMask.Text);
             ipSettings.SetKeyValue(textBoxSaveName.Text, KEYNAME_GATEWAY, textBoxGateway.Text);
 
@@ -345,7 +357,7 @@ namespace IPChange
             string dns2Address = checkBoxSetDns.Checked ? DHCP : textBoxSetDns2.Text;
             ipSettings.SetKeyValue(textBoxSaveName.Text, KEYNAME_DNS1, dns1Address);
             ipSettings.SetKeyValue(textBoxSaveName.Text, KEYNAME_DNS2, dns2Address);
-            
+
             ipSettings.Save(m_currentPath);
 
             listViewConfig.Items.Clear();
@@ -371,7 +383,7 @@ namespace IPChange
 
             m_process.WaitForExit();
             m_process.Close();
-            
+
             return resultValue;
         }
 
@@ -400,7 +412,7 @@ namespace IPChange
                     checkBoxSetIp.Checked = false;
                     textBoxSetIp.Text = ipAddress;
                 }
-                
+
                 textBoxSetSubnetMask.Text = ipSettings.GetKeyValue(m_selectedItemName, KEYNAME_SUBNETMASK);
                 textBoxGateway.Text = ipSettings.GetKeyValue(m_selectedItemName, KEYNAME_GATEWAY);
 
@@ -414,7 +426,7 @@ namespace IPChange
                 else
                 {
                     textBoxSetDns1.Text = dnsAddress;
-                    textBoxSetDns2.Text = ipSettings.GetKeyValue(m_selectedItemName, KEYNAME_DNS2);;
+                    textBoxSetDns2.Text = ipSettings.GetKeyValue(m_selectedItemName, KEYNAME_DNS2); ;
                     checkBoxSetDns.Checked = false;
                 }
             }
@@ -477,7 +489,7 @@ namespace IPChange
                 listViewConfig.Items.Clear();
                 loadIniConfig();
             }
-            
+
         }
 
         private void deleteItem()
@@ -495,11 +507,88 @@ namespace IPChange
             }
         }
 
+        private void settingIpConfig(int site)
+        {
+            string selectedInterfaceCard = comboNetwokInterface.Text;
+            textBoxSetIp.Text = string.Format("192.168.0.{0}", site);
+            textBoxSetSubnetMask.Text = string.Format("255.255.255.0");
+            textBoxGateway.Text = string.Format("192.168.0.101");
+
+            m_process.Start();
+
+            StringBuilder command = new StringBuilder();
+            command.Append("netsh interface ip set address name = \"");
+            command.Append(selectedInterfaceCard);
+            command.Append("\" static ");
+
+            if (textBoxSetIp.Text == string.Empty)
+            {
+                displayMessage("IP 값이 없습니다.");
+                return;
+            }
+            else
+            {
+                if (checkIpAddress(textBoxSetIp.Text))
+                {
+                    command.Append(textBoxSetIp.Text + " ");
+                }
+                else
+                {
+                    displayMessage("IP 값의 형식이 틀립니다.");
+                    return;
+                }
+
+            }
+
+            if (textBoxSetSubnetMask.Text == string.Empty)
+            {
+                displayMessage("서브넷 마스크 값이 없습니다.");
+                return;
+            }
+            else
+            {
+                if (checkIpAddress(textBoxSetIp.Text))
+                {
+                    command.Append(textBoxSetSubnetMask.Text + " ");
+                }
+                else
+                {
+                    displayMessage("서브넷 마스크 값의 형식이 틀립니다.");
+                    return;
+                }
+            }
+
+            if (textBoxGateway.Text == string.Empty)
+            {
+                displayMessage("기본 게이트웨이 값이 없습니다.");
+                return;
+            }
+            else
+            {
+                if (checkIpAddress(textBoxSetIp.Text))
+                {
+                    command.Append(textBoxGateway.Text + " ");
+                }
+                else
+                {
+                    displayMessage("기본 게이트웨이 값의 형식이 틀립니다.");
+                    return;
+                }
+            }
+
+            command.Append("1");
+            m_process.StandardInput.Write(command + Environment.NewLine);
+
+            processClose();
+
+            DisplayNetworkInfo();
+        }
+
         private void settingIpConfig()
         {
             string selectedInterfaceCard = comboNetwokInterface.Text;
             string selectedSettingName = textBoxSaveName.Text;
-            
+
             if (selectedSettingName == string.Empty)
             {
                 MessageBox.Show("설정을 선택해 주세요.");
@@ -539,7 +628,7 @@ namespace IPChange
                             displayMessage("IP 값의 형식이 틀립니다.");
                             return;
                         }
-                        
+
                     }
 
                     if (textBoxSetSubnetMask.Text == string.Empty)
@@ -661,6 +750,18 @@ namespace IPChange
         {
             MessageBox.Show(message);
             processClose();
+        }
+
+        private void btnSiteEnable_Click(object sender, EventArgs e)
+        {
+            if (sender == btnSite1)
+            {
+                settingIpConfig(1);
+            }
+            else if (sender == btnSite2)
+            {
+                settingIpConfig(2);
+            }
         }
     }
 }
